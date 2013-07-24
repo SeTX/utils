@@ -33,15 +33,12 @@ import gzip
 from binascii import hexlify
 from datetime import datetime
 
-
 #----------------------------------------------------------------------
 def checkArgs():
     """"""
     if len(argv) < 2:
         parser.print_help()
         exit()
-
-        
         
 ########################################################################
 class main:
@@ -55,7 +52,6 @@ class main:
         if db file is there
         """
         __path = './geoVault'
-        #__t_path = __path + '_'
         t = None
         
         if path.exists(__path):
@@ -95,9 +91,6 @@ class main:
                 gz_content.close()
                 self.dbPath = __path + '' + db_file_Name
                 print '[+] The DB file have been downloaded to ' + __path
-        
-        
-
 
     #----------------------------------------------------------------------
     def get_DB(self, csvFile):
@@ -121,15 +114,11 @@ class main:
         ip_list = []
         f = file(list_File, 'r')
         fr = f.readlines()
-        #print fr
         for line in fr:
             if line:
                 ip_list.append(line.replace('\n','').replace(' ',''))
-                #get_geoLoc(line)
-        
         f.close()
         return ip_list
-    
     
     #----------------------------------------------------------------------
     def get_Geo(self, list_File):
@@ -157,7 +146,6 @@ class main:
                         ip_start = int(hexlify(socket.inet_aton(db_line[0])), 16)
                         ip_stop = int(hexlify(socket.inet_aton(db_line[1])), 16)
                         if ip_start <= _ip_v4 <= ip_stop:
-                            #if IPAddress(db_line[0]) <= IPAddress(ip) <= IPAddress(db_line[1]):
                             print 'IP: ' + ip + ': \tRange (' + db_line[0] + ' - ' + db_line[1] + ') \tCountry: ' + db_line[2]
                             break
             elif _ip_v6:
@@ -165,13 +153,9 @@ class main:
                     ip_start = int(hexlify(socket.inet_pton(socket.AF_INET6, db_line[0])), 16)
                     ip_stop = int(hexlify(socket.inet_pton(socket.AF_INET6, db_line[1])), 16)
                     if ip_start <= _ip_v6 <= ip_stop:
-                            #if IPAddress(db_line[0]) <= IPAddress(ip) <= IPAddress(db_line[1]):
                             print 'IP: ' + ip + ': \tRange (' + db_line[0] + ' - ' + db_line[1] + ') \tCountry: ' + db_line[2]
                             break
     
-    
-
-
 if __name__ == '__main__':
       
     parser = argparse.ArgumentParser(description='Version - IP Geo Looker v0.1', prog='IPGeoLooker.py', usage=' Main options \n- %(prog)s -f (file)\n', epilog='Для получения любой информации обращайтесь всё тудаже')
@@ -186,5 +170,3 @@ if __name__ == '__main__':
     
     m = main(args.db_File)
     m.get_Geo(args.ip_List)
-
-    
