@@ -1,3 +1,6 @@
 Here are some util scrits, some of theme are:
 
-IPGeoLooker - Gets updated CSV db file from db-ip.com stores it to geoVault foulder and parse all IPs from file you indicate
+geoip.py - It's a simple GeoIP chaker
+	Works with FreeGeoIP (FreeGeoIP API have a limitation: 10k requests per hour, and supports just IPv6)
+	Suports 1 IP address or a file
+	
