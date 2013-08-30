@@ -1,6 +1,6 @@
 Here are some util scrits, some of theme are:
 
 geoip.py - It's a simple GeoIP chaker
-	Works with FreeGeoIP (FreeGeoIP API have a limitation: 10k requests per hour, and supports just IPv6)
-	Suports 1 IP address or a file
+ - Works with FreeGeoIP (FreeGeoIP API have a limitation: 10k requests per hour, and supports just IPv6)
+ - Suports 1 IP address or a file
 	
