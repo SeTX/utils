@@ -29,8 +29,7 @@ from os import path
 import sys, os
 import urllib2
 import argparse
-#from socket import inet_aton, inet_pton, AF_INET6
-import socket
+from socket import inet_aton, inet_pton, AF_INET6
 import json
 
 #----------------------------------------------------------------------
@@ -60,17 +59,15 @@ class utils:
         e_v6 = None
         
         try:
-            _ip_v4 = socket.inet_aton(ip)
+            _ip_v4 = inet_aton(ip)
             return 4
         except Exception, e:
-            #print '[!] Error: IP "' + ip + '" is not IPv4 or malformated, check the parser or IP please.\n[!] Error: ' + e
             e_v4 = 'IPv4'
         
         try:
-            _ip_v6 = socket.inet_pton(socket.AF_INET6, ip)
+            _ip_v6 = inet_pton(AF_INET6, ip)
             return 6
         except Exception, e:
-            #print '[!] Error: IP "' + ip + '" is not IPv6 or malformated, check the parser or IP please.\n[!] Error: ' + e
             e_v6 = 'IPv6'
         
         error =  '[!] Error: IP "' + ip + '" is not ' + e_v4 + ', ' + e_v6 + ' or malformated, check the parser or IP please.\n[!] Error: ' + str(e)
@@ -179,7 +176,6 @@ def main(ip = None, file = None, output = None):
                     output_data.append(chk)
             
         if output:
-            #print output_data
             utils().output_Write(output, output_data)
 
 
