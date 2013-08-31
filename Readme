@@ -3,4 +3,17 @@ Here are some util scrits, some of theme are:
 geoip.py - It's a simple GeoIP chaker
  - Works with FreeGeoIP (FreeGeoIP API have a limitation: 10k requests per hour, and supports just IPv6)
  - Suports 1 IP address or a file
+ - Can be used like a Module
+  
+  import geoip
+  geo = geoip(ip = '8.8.8.8') 
+  # If using file with IPs
+  # geo = geoip(file = 'ipList.txt') 
+  # 
+  # "getGeo" - returns the parsed IPs list
+  # "prnt" prints to stdout
+  geo.getGeo(prnt = True) 
+  
+  # Writes parsed IPs to log file
+  geo.outWrite(output = 'output.log')
 	
