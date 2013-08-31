@@ -71,7 +71,7 @@ class geoip:
     
     #----------------------------------------------------------------------
     def getGeo(self, prnt = False):
-        """"""
+        """Returns the list geo data of all IPs"""
         
         self.output = []
         
@@ -159,7 +159,7 @@ class geoip:
         
     #----------------------------------------------------------------------
     def outWrite(self, output):
-        """"""
+        """Writes the geo data list into the file """
         
         f = open(output, 'w')
         for line in self.output:
@@ -185,7 +185,9 @@ def main(ip = None, file = None, output = None):
 
 
 if __name__ == '__main__':
-      
+
+    print '[*] GeoIP on work...'
+    
     parser = argparse.ArgumentParser(description='Version - GeoIP v0.3b', prog='GeoIP.py', usage=' Main options \n- %(prog)s ( -i ip_address / -f file ) [-o output_file]\n', epilog='Для получения любой информации обращайтесь всё тудаже')
     
     gr1 = parser.add_argument_group('Main Options')
@@ -196,6 +198,7 @@ if __name__ == '__main__':
   
     checkArgs()
     args = parser.parse_args()
+    
     
     if args.ip_address:
         main(ip = args.ip_address, output = args.output_file)
