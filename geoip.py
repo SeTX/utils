@@ -43,12 +43,45 @@ def checkArgs():
         
 
 ########################################################################
-class utils:
+class geoip:
     """"""
 
     #----------------------------------------------------------------------
-    def __init__(self):
+    def __init__(self, ip = None, file = None):
         """Constructor"""
+        
+        self.ip = []
+        self.output_data = []
+        chk = None
+        
+        if ip:
+            chk = self.chk_IP(ip)
+            if chk == 4:
+                self.ip.append(ip)
+                
+        elif file:
+            if path.exists(file) and path.isfile(file):
+                ip_list = self.get_ips_FromFile(file)
+                for ip in ip_list:
+                    chk = self.chk_IP(ip)
+                    if chk == 4:
+                        self.ip.append(ip)
+                
+    
+    #----------------------------------------------------------------------
+    def getGeo(self, prnt = False):
+        """"""
+        
+        self.output = []
+        
+        for ip in self.ip:
+            json_data = self.get_geo_Data(ip)
+            line = self.format_json(json_data)
+            self.output.append(line)
+            if prnt:
+                print line
+        
+        return self.output
         
     #----------------------------------------------------------------------
     def chk_IP(self, ip):
@@ -120,15 +153,15 @@ class utils:
     def format_json(self, js):
         """Print formated date IP: x.x.x.x Countre: Xxxx Regior: Xxxx City: Xxxx"""
         data = json.loads(js)
-        f_data = 'IP: ' + data['ip'] + '\tCountry:(' + data['country_code'] + ') ' + data['country_name'] + '\tRegion: ' + data['region_name'] + '\tCity: ' + data['city']
+        f_data = 'IP: ' + data['ip'] + ' --> \tCountry:(' + data['country_code'] + ') ' + data['country_name'] + '\tRegion: ' + data['region_name'] + '\tCity: ' + data['city']
         return f_data
         
     #----------------------------------------------------------------------
-    def output_Write(self, output, data):
+    def output_Write(self, output):
         """"""
         
         f = open(output, 'w')
-        for line in data:
+        for line in self.output:
             f.write(line + '\n')
         f.close()
         
@@ -136,47 +169,18 @@ class utils:
 #----------------------------------------------------------------------
 def main(ip = None, file = None, output = None):
     """Main function"""
-
-    output_data = []
-    chk = None
-    line = None
     
-    if ip:
-        chk = utils().chk_IP(ip)
-        if chk == 4:
-            json_data = utils().get_geo_Data(ip)
-            line = utils().format_json(json_data)
-            if output:
-                output_data.append(line)
-                print line
-            else:
-                print line
-        elif str(chk).startswith('[!] Error:'):
-            print chk
-            output_data.append(chk)
-            
+    if ip:        
+        geo = geoip(ip = ip)
+        geo.getGeo(prnt = True)
         if output:
-            utils().output_Write(output, output_data)
+            geo.output_Write(output)
             
     elif file:
-        if path.exists(file) and path.isfile(file):
-            ip_list = utils().get_ips_FromFile(file)
-            for ip in ip_list:
-                chk = utils().chk_IP(ip)
-                if chk == 4:
-                    json_data = utils().get_geo_Data(ip)
-                    line = utils().format_json(json_data)
-                    if output:
-                        output_data.append(line)
-                        print line
-                    else:
-                        print line
-                elif str(chk).startswith('[!] Error:'):
-                    print chk
-                    output_data.append(chk)
-            
+        geo = geoip(file = file)
+        geo.getGeo(prnt = True)
         if output:
-            utils().output_Write(output, output_data)
+            geo.output_Write(output)
 
 
 if __name__ == '__main__':
