@@ -104,7 +104,7 @@ class geoip:
         except Exception, e:
             e_v6 = 'IPv6'
         
-        error =  '[!] Error: IP "' + ip + '" is not ' + e_v4 + ', ' + e_v6 + ' or malformated, check the parser or IP please.\n[!] Error: ' + str(e)
+        error =  '[!] Error: IP "%s" is not %s, %s or malformated, check the parser or IP please.\n[!] Error: %s'% (ip, e_v4, e_v6, str(e))
         return error
             
     #----------------------------------------------------------------------
@@ -112,24 +112,24 @@ class geoip:
         """Request Geo data from FreeGeoIP"""
         url = None
         try:
-            url = "https://freegeoip.net/json/" + ip
+            url = "https://freegeoip.net/json/%s" % (ip)
             req = urllib2.urlopen(url)
             if req.getcode() == 200:
                 return req.read()
             if req.getcode() == 403:
                 print '[!] Error: 403 response has been received on "https://freegeoip.net". \nThe limit is up or there are some problem on the server, trying with "http://freegeoip.net"'
-                url = "http://freegeoip.net/json/" + ip
+                url = "http://freegeoip.net/json/%s" % (ip)
                 req = urllib2.urlopen(url)
                 if req.getcode() == 200:
                     return req.read()
                 else:
-                    print '[!] Error: ' + req.getcode() + ' response has been received on "http://freegeoip.net". \nThe limit is up or there are some problem on the server.'
+                    print '[!] Error: %s response has been received on "http://freegeoip.net". \nThe limit is up or there are some problem on the server.' % (req.getcode())
                     exit(-1)
             else:
-                print '[!] Error: ' + req.getcode() + ' response has been received on "http://freegeoip.net". \nThe limit is up or there are some problem on the server.'
+                print '[!] Error: %s response has been received on "http://freegeoip.net". \nThe limit is up or there are some problem on the server.' % (req.getcode())
                 exit(-1)
         except Exception, e:
-            print '[!] Error: ' + e
+            print '[!] Error: %s' % (str(e))
             exit(-1)
             
     
@@ -154,7 +154,7 @@ class geoip:
     def format_json(self, js):
         """Print formated date IP: x.x.x.x Countre: Xxxx Regior: Xxxx City: Xxxx"""
         data = json.loads(js)
-        f_data = 'IP: ' + data['ip'] + ' --> \tCountry:(' + data['country_code'] + ') ' + data['country_name'] + '\tRegion: ' + data['region_name'] + '\tCity: ' + data['city']
+        f_data = 'IP: %s --> \tCountry:(%s) %s\tRegion: %s\tCity: %s' % (data['ip'], data['country_code'], data['country_name'], data['region_name'], data['city'])
         return f_data
         
     #----------------------------------------------------------------------
