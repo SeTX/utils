@@ -22,6 +22,7 @@
 #   1. FreeGeoIP online database is used, there are 10k requests per hour limitation
 #   2. As I see, FreeGeoIP support just IPv4
 #   3. IP addresses are cheked for version and if malformated
+#   4. Can b e used like a module
 # 
 
 from sys import exit, argv
@@ -157,7 +158,7 @@ class geoip:
         return f_data
         
     #----------------------------------------------------------------------
-    def output_Write(self, output):
+    def outWrite(self, output):
         """"""
         
         f = open(output, 'w')
@@ -174,18 +175,18 @@ def main(ip = None, file = None, output = None):
         geo = geoip(ip = ip)
         geo.getGeo(prnt = True)
         if output:
-            geo.output_Write(output)
+            geo.outWrite(output)
             
     elif file:
         geo = geoip(file = file)
         geo.getGeo(prnt = True)
         if output:
-            geo.output_Write(output)
+            geo.outWrite(output)
 
 
 if __name__ == '__main__':
       
-    parser = argparse.ArgumentParser(description='Version - GeoIP v0.2b', prog='GeoIP.py', usage=' Main options \n- %(prog)s ( -i ip_address / -f file ) [-o output_file]\n', epilog='Для получения любой информации обращайтесь всё тудаже')
+    parser = argparse.ArgumentParser(description='Version - GeoIP v0.3b', prog='GeoIP.py', usage=' Main options \n- %(prog)s ( -i ip_address / -f file ) [-o output_file]\n', epilog='Для получения любой информации обращайтесь всё тудаже')
     
     gr1 = parser.add_argument_group('Main Options')
     gr1.add_argument('-f', '--file=', action='store', dest='ip_list_file', default=None, help='Text file with list of IP addresses to be parsed')
