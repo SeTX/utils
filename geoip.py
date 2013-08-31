@@ -89,8 +89,8 @@ class geoip:
         """Check the IP address version, and if is a molformated"""
         _ip_v4 = None
         _ip_v6 = None
-        e_v4 = None
-        e_v6 = None
+        e_v4 = ""
+        e_v6 = ""
         
         try:
             _ip_v4 = inet_aton(ip)
