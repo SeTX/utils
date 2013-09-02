@@ -19,3 +19,14 @@ geoip.py - It's a simple GeoIP chaker
   geo.outWrite(output = 'output.log')
 
 **************************************************************************
+
+decoder.py - Simple decoder, supports:
+ - base64
+ - zlib (Compress / Decompress)
+ - hex (Encode / Decode)
+ - xor <- ToDo
+ - BruteForce Xor <- ToDo
+ - b>z>b (Decoding in sequence) <- ToDo
+
+**************************************************************************
+
