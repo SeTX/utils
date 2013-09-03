@@ -267,7 +267,7 @@ if __name__ == '__main__':
 
     
     
-    parser = argparse.ArgumentParser(description='Version - Decoder v0.3b', prog='Decoder.py', usage=' Main options \n- %(prog)s [-e] (-b/-z/-x) ( -i data / -f file ) [-o output_file]\n', epilog='Для получения любой информации обращайтесь всё тудаже')
+    parser = argparse.ArgumentParser(description='Version - Decoder v0.3b', prog='Decoder.py', usage=' Main options \n- %(prog)s [-e] (-s/-b/-i/-u/-x) ( -i data / -f file ) [-o output_file]\n', epilog='Для получения любой информации обращайтесь всё тудаже')
     
     gr1 = parser.add_argument_group('Main Options')
     gr1.add_argument('-f', '--file=', action='store', dest='file', default=None, help='Text file with data to be decoded or encoded')
@@ -275,8 +275,8 @@ if __name__ == '__main__':
     gr1.add_argument('-o', '--output=', action='store', dest='output_file', default=None, help='Output file')
     gr1.add_argument('-e', action='store_true', dest='encode', default=False, help='Encode/compress data, default action is decoding/decompressing')
     gr1.add_argument('-b', action='store_true', dest='base64', default=False, help='Base64 encode/decode method')
-    gr1.add_argument('-u', action='store_true', dest='zlib_gzun', default=False, help='Zlib uncompress compress/decompress method')
-    gr1.add_argument('-i', action='store_true', dest='zlib_gzin', default=False, help='Zlib inflate compress/decompress method')
+    gr1.add_argument('-u', action='store_true', dest='zlib_gzun', default=False, help='Zlib "gzuncompress" compress/decompress method')
+    gr1.add_argument('-i', action='store_true', dest='zlib_gzin', default=False, help='Zlib "gzinflate" compress/decompress method')
     gr1.add_argument('-x', action='store_true', dest='hex', default=False, help='Hex encode/decode method')
     gr1.add_argument('-s', action='store', dest='sequence', default=None, help='Decoding sequence e.g.(-s "b>i>b")')
     gr1.add_argument('-v', '--version', action='version', version='%(prog)s v0.3b')
