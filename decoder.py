@@ -179,9 +179,9 @@ class decoder:
             return '[!] Error Output Write: %s.' % e
         
     #----------------------------------------------------------------------
-    def sequense(self, sequense, encode = False):
+    def sequence(self, sequence, encode = False):
         """
-        Parses sequense of methods to be applied
+        Parses sequence of methods to be applied
         e.g.
         b>i>b
         Base64(data) then Zlib_inflate(data) and then another Base64(date) 
@@ -191,7 +191,7 @@ class decoder:
         
         try:
             out = self.data
-            array = filter(None, sequense.split('>'))
+            array = filter(None, sequence.split('>'))
             for method in array:
                 out = self.wrapper(method = method, data = out, encode = encode)
             return out
@@ -231,7 +231,7 @@ def main(input_data, file, encode = False, xor = False, base64 = False, zlib_gzu
         print ' [!] Error: Not yet support.'
         exit(0)
     elif sequence:
-        out = dec.sequense(sequence, encode = encode)
+        out = dec.sequence(sequence, encode = encode)
     elif base64:
         if encode:
             out = dec.base64(encode = True)
@@ -267,7 +267,7 @@ if __name__ == '__main__':
 
     
     
-    parser = argparse.ArgumentParser(description='Version - Decoder v0.2b', prog='Decoder.py', usage=' Main options \n- %(prog)s [-e] (-b/-z/-x) ( -i data / -f file ) [-o output_file]\n', epilog='Для получения любой информации обращайтесь всё тудаже')
+    parser = argparse.ArgumentParser(description='Version - Decoder v0.3b', prog='Decoder.py', usage=' Main options \n- %(prog)s [-e] (-b/-z/-x) ( -i data / -f file ) [-o output_file]\n', epilog='Для получения любой информации обращайтесь всё тудаже')
     
     gr1 = parser.add_argument_group('Main Options')
     gr1.add_argument('-f', '--file=', action='store', dest='file', default=None, help='Text file with data to be decoded or encoded')
@@ -278,8 +278,8 @@ if __name__ == '__main__':
     gr1.add_argument('-u', action='store_true', dest='zlib_gzun', default=False, help='Zlib uncompress compress/decompress method')
     gr1.add_argument('-i', action='store_true', dest='zlib_gzin', default=False, help='Zlib inflate compress/decompress method')
     gr1.add_argument('-x', action='store_true', dest='hex', default=False, help='Hex encode/decode method')
-    gr1.add_argument('-s', action='store', dest='sequence', default=None, help='Decoding sequense e.g.(-s "b>i>b")')
-    gr1.add_argument('-v', '--version', action='version', version='%(prog)s v0.2b')
+    gr1.add_argument('-s', action='store', dest='sequence', default=None, help='Decoding sequence e.g.(-s "b>i>b")')
+    gr1.add_argument('-v', '--version', action='version', version='%(prog)s v0.3b')
 
     checkArgs()
     args = parser.parse_args()
@@ -287,25 +287,7 @@ if __name__ == '__main__':
     main(input_data = args.input_data, file = args.file, encode = args.encode, xor = False, base64 = args.base64, zlib_gzun = args.zlib_gzun, hex = args.hex, output_file = args.output_file, zlib_gzin = args.zlib_gzin, sequence = args.sequence)
     
 
+
     
-    """
-    Tipical and most used combinations
-    
-    eval(gzinflate(base64_decode('Code')))
-    eval(gzinflate(str_rot13(base64_decode('Code'))))
-    eval(gzinflate(base64_decode(str_rot13('Code'))))
-    eval(gzinflate(base64_decode(base64_decode(str_rot13('Code')))))
-    eval(gzuncompress(base64_decode('Code')))
-    eval(gzuncompress(str_rot13(base64_decode('Code'))))
-    eval(gzuncompress(base64_decode(str_rot13('Code'))))
-    eval(base64_decode('Code'))
-    eval(str_rot13(gzinflate(base64_decode('Code'))))
-    eval(gzinflate(base64_decode(strrev(str_rot13('Code')))))
-    eval(gzinflate(base64_decode(strrev('Code'))))
-    eval(gzinflate(base64_decode(str_rot13('Code'))))
-    eval(gzinflate(base64_decode(str_rot13(strrev('Code')))))
-    eval(base64_decode(gzuncompress(base64_decode('Code'))))
-    eval(gzinflate(base64_decode(rawurldecode('Code'))))
-    """
     
     
