@@ -19,6 +19,26 @@
 #
 #
 #
+"""
+    Tipical and most used combinations
+    
+    eval(gzinflate(base64_decode('Code')))
+    eval(gzinflate(str_rot13(base64_decode('Code'))))
+    eval(gzinflate(base64_decode(str_rot13('Code'))))
+    eval(gzinflate(base64_decode(base64_decode(str_rot13('Code')))))
+    eval(gzuncompress(base64_decode('Code')))
+    eval(gzuncompress(str_rot13(base64_decode('Code'))))
+    eval(gzuncompress(base64_decode(str_rot13('Code'))))
+    eval(base64_decode('Code'))
+    eval(str_rot13(gzinflate(base64_decode('Code'))))
+    eval(gzinflate(base64_decode(strrev(str_rot13('Code')))))
+    eval(gzinflate(base64_decode(strrev('Code'))))
+    eval(gzinflate(base64_decode(str_rot13('Code'))))
+    eval(gzinflate(base64_decode(str_rot13(strrev('Code')))))
+    eval(base64_decode(gzuncompress(base64_decode('Code'))))
+    eval(gzinflate(base64_decode(rawurldecode('Code'))))
+"""
+
 
 
 from sys import argv, exit
@@ -40,13 +60,14 @@ class decoder:
     """"""
 
     #----------------------------------------------------------------------
-    def __init__(self, input_data = False, file = False):
+    def __init__(self, input_data = None, file = False):
         """Constructor"""
         
         if file:
-            f = open(file, 'r')
+            f = open(file, 'rb')
             self.data = f.read()
             f.close()
+            
         elif input_data:
             self.data = input_data
         else:
@@ -54,52 +75,97 @@ class decoder:
         
     
     #----------------------------------------------------------------------
-    def base64(self):
+    def base64(self, data = None, encode = False):
         """Return the encoded or decoded in Base64, string or file data"""
         try:
-            return self.data.decode("base64")
+            if not encode:
+                if data:
+                    return data.decode("base64")
+                else:
+                    return self.data.decode("base64")
+            else:
+                if data:
+                    return data.encode("base64")
+                else:
+                    return self.data.encode("base64")
         except Exception, e:
             return '[!] Error Base64: %s.' % e
         
         
     #----------------------------------------------------------------------
-    def zlib(self, decompress = False):
+    def zlib_gzun(self, compress = False, data = None):
         """Return the compressed or decompressed with Zlib, string or file data"""
-        if decompress:
+        if not compress:
             try:
-                return zlib.decompress(self.data)
+                if data:
+                    return zlib.decompress(data)
+                else:
+                    return zlib.decompress(self.data)
             except Exception, e:
                 return '[!] Error Zlib decompress: %s.' % e
         else:
             try:
-                return zlib.compress(self.data)
+                if data:
+                    return zlib.compress(data)
+                else:
+                    return zlib.compress(self.data)
             except Exception, e:
                 return '[!] Error Zlib compress: %s.' % e
             
     #----------------------------------------------------------------------
-    def hex(self, decode = False):
+    def zlib_gzin(self, compress = False, data = None):
+        """Return the compressed or decompressed object with Zlib, string or file data"""
+        if not compress:
+            try:
+                if data:
+                    return zlib.decompressobj().decompress('x\x9c' + data)
+                else:
+                    return zlib.decompressobj().decompress('x\x9c' + self.data)
+            except Exception, e:
+                return '[!] Error Zlib inflate decompress: %s.' % e
+        else:
+            try:
+                if data:
+                    return ((zlib.compress(data))[2:])[:-4]
+                else:
+                    return ((zlib.compress(self.data))[2:])[:-4]
+            except Exception, e:
+                return '[!] Error Zlib inflate compress: %s.' % e
+                    
+        
+    #----------------------------------------------------------------------
+    def hex(self, encode = False, data = None):
         """Return the encoded or decoded in Hex, string or file data"""
         
-        data = ""
+        out = ""
         
-        if self.data.upper().startswith('0X'):
-            array = self.data.split('0x')
-            array = filter(None, array)
-            for char in array:
-                data += char
+        if data:
+            if data.upper().startswith('0X'):
+                array = data.split('0x')
+                array = filter(None, array)
+                for char in array:
+                    out += char
+            else:
+                out = data
         else:
-            data = self.data
+            if self.data.upper().startswith('0X'):
+                array = self.data.split('0x')
+                array = filter(None, array)
+                for char in array:
+                    out += char
+            else:
+                out = self.data
         
-        if decode:
+        if not encode:
             try:
-                return data.decode("hex")
-            except Exception, e:
-                return '[!] Error HEX encoding: %s.' % e
-        else:
-            try:
-                return data.encode("hex")
+                return out.decode("hex")
             except Exception, e:
                 return '[!] Error HEX decoding: %s.' % e
+        else:
+            try:
+                return out.encode("hex")
+            except Exception, e:
+                return '[!] Error HEX encoding: %s.' % e
             
     #----------------------------------------------------------------------
     def output_Write(self, output_file, data):
@@ -112,12 +178,46 @@ class decoder:
         except Exception, e:
             return '[!] Error Output Write: %s.' % e
         
+    #----------------------------------------------------------------------
+    def sequense(self, sequense, encode = False):
+        """
+        Parses sequense of methods to be applied
+        e.g.
+        b>i>b
+        Base64(data) then Zlib_inflate(data) and then another Base64(date) 
+        methods will be applied
+        """
+        array = []
         
+        try:
+            out = self.data
+            array = filter(None, sequense.split('>'))
+            for method in array:
+                out = self.wrapper(method = method, data = out, encode = encode)
+            return out
+        except Exception, e:
+            return '[!] Error Sequence: %s.' % e
+        
+    #----------------------------------------------------------------------
+    def wrapper(self, method, data = None, encode = False):
+        """Returns the parsed data with the function according to the indicated method"""
+        if method == 'b':
+            return self.base64(data = data, encode = encode)
+        elif method == 'i':
+            return self.zlib_gzin(compress = encode, data = data)
+        elif method == 'u':
+            return self.zlib_gzun(compress = encode, data = data)
+        elif method == 'x':
+            return self.hex(encode = encode, data = data)
+        else:
+            return '[!] Error Sequence: No data recieved as method.'
 
 
 #----------------------------------------------------------------------
-def main(input_data, file, encode, xor = False, base64 = False, zlib = False, hex = False, output_file = None):
+def main(input_data, file, encode = False, xor = False, base64 = False, zlib_gzun = False, hex = False, output_file = None, zlib_gzin = False, sequence = False):
     """Simple main function"""
+
+    out = ''
     
     if input_data:
         dec = decoder(input_data = input_data)
@@ -125,56 +225,87 @@ def main(input_data, file, encode, xor = False, base64 = False, zlib = False, he
         dec = decoder(file = file)
     else:
         print '[!] Error Input Data: The data is not specified.'
-        
+        exit(-1)
+    
     if xor:
         print ' [!] Error: Not yet support.'
         exit(0)
+    elif sequence:
+        out = dec.sequense(sequence, encode = encode)
     elif base64:
-        out = dec.base64()
-    elif zlib:
         if encode:
-            out = dec.zlib()
+            out = dec.base64(encode = True)
         else:
-            out = dec.zlib(decompress = True)
+            out = dec.base64()
+    elif zlib_gzun:
+        if encode:
+            out = dec.zlib_gzun(encode = True)
+        else:
+            out = dec.zlib_gzun()
+    elif zlib_gzin:
+        if encode:
+            out = dec.zlib_gzin(encode = True)
+        else:
+            out = dec.zlib_gzin()
     elif hex:
         if encode:
-            out = dec.hex()
+            out = dec.hex(encode = True)
         else:
-            out = dec.hex(decode = True)
-    
+            out = dec.hex()
         
     
     if output_file:
         print dec.output_Write(output_file = output_file, data = out)
     else:
+        print '[*] Decoder on work...'
+        print '*********************************'
         print out
-    
+        print '[*] Work Done!'
 
 
 if __name__ == '__main__':
 
-    #print '[*] Decoder on work...'
-    #print '*********************************'
+    
     
     parser = argparse.ArgumentParser(description='Version - Decoder v0.2b', prog='Decoder.py', usage=' Main options \n- %(prog)s [-e] (-b/-z/-x) ( -i data / -f file ) [-o output_file]\n', epilog='Для получения любой информации обращайтесь всё тудаже')
     
     gr1 = parser.add_argument_group('Main Options')
     gr1.add_argument('-f', '--file=', action='store', dest='file', default=None, help='Text file with data to be decoded or encoded')
-    gr1.add_argument('-i', '--input=', action='store', dest='input_data', default=None, help='Input data')
+    gr1.add_argument('-d', '--data=', action='store', dest='input_data', default=None, help='Input data')
     gr1.add_argument('-o', '--output=', action='store', dest='output_file', default=None, help='Output file')
     gr1.add_argument('-e', action='store_true', dest='encode', default=False, help='Encode/compress data, default action is decoding/decompressing')
     gr1.add_argument('-b', action='store_true', dest='base64', default=False, help='Base64 encode/decode method')
-    gr1.add_argument('-z', action='store_true', dest='zlib', default=False, help='Zlib compress/decompress method')
+    gr1.add_argument('-u', action='store_true', dest='zlib_gzun', default=False, help='Zlib uncompress compress/decompress method')
+    gr1.add_argument('-i', action='store_true', dest='zlib_gzin', default=False, help='Zlib inflate compress/decompress method')
     gr1.add_argument('-x', action='store_true', dest='hex', default=False, help='Hex encode/decode method')
+    gr1.add_argument('-s', action='store', dest='sequence', default=None, help='Decoding sequense e.g.(-s "b>i>b")')
     gr1.add_argument('-v', '--version', action='version', version='%(prog)s v0.2b')
 
     checkArgs()
     args = parser.parse_args()
     
-    main(input_data = args.input_data, file = args.file, encode = args.encode, xor = False, base64 = args.base64, zlib = args.zlib, hex = args.hex, output_file = args.output_file)
+    main(input_data = args.input_data, file = args.file, encode = args.encode, xor = False, base64 = args.base64, zlib_gzun = args.zlib_gzun, hex = args.hex, output_file = args.output_file, zlib_gzin = args.zlib_gzin, sequence = args.sequence)
     
-    #print '[*] Work Done!'
+
     
+    """
+    Tipical and most used combinations
     
+    eval(gzinflate(base64_decode('Code')))
+    eval(gzinflate(str_rot13(base64_decode('Code'))))
+    eval(gzinflate(base64_decode(str_rot13('Code'))))
+    eval(gzinflate(base64_decode(base64_decode(str_rot13('Code')))))
+    eval(gzuncompress(base64_decode('Code')))
+    eval(gzuncompress(str_rot13(base64_decode('Code'))))
+    eval(gzuncompress(base64_decode(str_rot13('Code'))))
+    eval(base64_decode('Code'))
+    eval(str_rot13(gzinflate(base64_decode('Code'))))
+    eval(gzinflate(base64_decode(strrev(str_rot13('Code')))))
+    eval(gzinflate(base64_decode(strrev('Code'))))
+    eval(gzinflate(base64_decode(str_rot13('Code'))))
+    eval(gzinflate(base64_decode(str_rot13(strrev('Code')))))
+    eval(base64_decode(gzuncompress(base64_decode('Code'))))
+    eval(gzinflate(base64_decode(rawurldecode('Code'))))
+    """
     
     
