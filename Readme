@@ -22,14 +22,19 @@ geoip.py - It's a simple GeoIP chaker
 
 decoder.py - Simple decoder, supports:
  - base64
- - zlib (Compress / Decompress)
  - hex (Encode / Decode)
- - xor <- ToDo
- - BruteForce Xor <- ToDo
+ - gzuncompress
+ - gzinflate
+ - str_rot13
+ - strrev
+ - rawurldecode
  - b>z>b (Decoding in sequence) 
    # This example will decode in sequence
    # Base64 the Zlib inflate and then Bse64 again
    e.g. (decoder.py -s "b>i>b" -f file) 
+[ToDo]
+ - xor
+ - BruteForce Xor
 
 **************************************************************************
 
