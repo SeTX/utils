@@ -169,7 +169,7 @@ class decoder:
             
     #----------------------------------------------------------------------
     def rot_13(self, data = None, encode = False):
-        """"""
+        """Decodes and encodes rot_13 method"""
         try:
             if not encode:
                 if data:
@@ -186,7 +186,7 @@ class decoder:
         
     #----------------------------------------------------------------------
     def strrev(self, data = None):
-        """"""
+        """Returns reversed data"""
         try:
             if data:
                 return data[::-1]
@@ -197,7 +197,7 @@ class decoder:
         
     #----------------------------------------------------------------------
     def rawurldecode(self, data = None, encode = False):
-        """"""
+        """Encode or decode with rawurl method"""
         try:
             if not encode:
                 if data:
@@ -322,6 +322,7 @@ def main(input_data, file, encode = False, xor = False, base64 = False, zlib_gzu
         print '[*] Decoder on work...'
         print '*********************************'
         print out
+        print '*********************************'
         print '[*] Work Done!'
 
 
@@ -344,7 +345,7 @@ if __name__ == '__main__':
     gr1.add_argument('-t', action='store_true', dest='strrev', default=False, help='strrev encode/decode method')
     gr1.add_argument('-l', action='store_true', dest='rawurldecode', default=False, help='rawurldecode encode/decode method')
     gr1.add_argument('-s', action='store', dest='sequence', default=None, help='Decoding sequence e.g.(-s "b>i>b")')
-    gr1.add_argument('-v', '--version', action='version', version='%(prog)s v0.3b')
+    gr1.add_argument('-v', '--version', action='version', version='%(prog)s v0.4b')
     
     
     
